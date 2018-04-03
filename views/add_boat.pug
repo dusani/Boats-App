@@ -2,3 +2,20 @@ extends layout
 
 block content
     h1 #{title}
+    form(method='POST', action='/boats/add')
+        #form-group
+            label Name:
+            input.form-control(name='name', type='text')
+        #form-group
+            label Year:
+            input.form-control(name='year', type='number')
+        #form-group
+            label Engine:
+            input.form-control(name='engine', type='text')
+        #form-group
+            label Crew:
+            input.form-control(name='crew', type='number')
+        #form-group
+            label Guest:
+            input.form-control(name='guest', type='number')
+        input.btn.btn-primary(type='submit', value='Add Boat ->')

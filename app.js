@@ -14,6 +14,12 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+//---- Middleware ----//
+// parse application/x-www-form-urlencoded
+app.use(express.urlencoded({ extended: false }));
+// parse application/json
+app.use(express.json());
+
 //---- Routes ----//
 // Home Route
 app.get('/', (req, res) => {
@@ -32,6 +38,24 @@ app.get('/', (req, res) => {
 app.get('/boats/add', (req, res) => {
     res.render('add_boat', {
         title: 'Add Boats'
+    });
+});
+
+// Add Submit POST Route
+app.post('/boats/add', (req, res) => {
+    // console.log('Submitted');
+    let boat = new Boat();
+    boat.name = req.body.name;
+    // console.log(req.body.name);
+    boat.year = req.body.year;
+    boat.engine = req.body.engine;
+    boat.crew = req.body.crew;
+    boat.guest = req.body.guest;
+
+    boat.save(error => {
+        if (error) throw error;
+
+        res.redirect('/');
     });
 });
 
