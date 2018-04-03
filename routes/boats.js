@@ -86,7 +86,7 @@ router.delete('/:id', (req, res) => {
     Boat.remove(query, error => {
         if (error) throw err;
 
-        res.send('Sucess');
+        res.send('Success');
     });
 });
 

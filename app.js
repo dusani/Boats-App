@@ -78,8 +78,12 @@ app.get('/', (req, res) => {
 });
 
 //---- Bring in Routes files ----//
+// Boats Routes
 let boats = require('./routes/boats');
 app.use('/boats', boats);
+// User Routes
+let users = require('./routes/users');
+app.use('/users', users);
 
 //---- Start Server ----//
 app.listen(3000, () => {
