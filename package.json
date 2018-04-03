@@ -1,0 +1,14 @@
+{
+    "name": "Boats-App",
+    "version": "1.0.0",
+    "main": "app.js",
+    "scripts": {
+        "start": "node app"
+    },
+    "author": "Daniel Usani <dusani@techlaunch.io>",
+    "license": "MIT",
+    "dependencies": {
+        "express": "^4.16.3",
+        "pug": "^2.0.3"
+    }
+}

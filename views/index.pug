@@ -1,0 +1,8 @@
+extends layout
+
+block content
+    h1 #{title}
+    ul
+        each boat, i in boats
+            li= boat.name
+    
