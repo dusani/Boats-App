@@ -1,5 +1,11 @@
 const express = require('express');
 const path = require('path');
+const mongoose = require('mongoose');
+
+// Bring in Boats Model
+let Boat = require('./models/boat');
+
+mongoose.connect('mongodb://user:admin@ds161443.mlab.com:61443/boats');
 
 //---- Init App ----//
 const app = express();
@@ -11,35 +17,15 @@ app.set('view engine', 'pug');
 //---- Routes ----//
 // Home Route
 app.get('/', (req, res) => {
-    let boats = [
-        {
-            id: 1,
-            name: 'Boat 1',
-            year: '2017',
-            engine: '2000 HP',
-            crew: '2',
-            guest: '7'
-        },
-        {
-            id: 2,
-            name: 'Boat 2',
-            year: '2018',
-            engine: '2400 HP',
-            crew: '3',
-            guest: '9'
-        },
-        {
-            id: 3,
-            name: 'Boat 3',
-            year: '2016',
-            engine: '1900 HP',
-            crew: '2',
-            guest: '6'
+    Boat.find({}, (error, boats) => {
+        if (error) {
+            throw err;
+        } else {
+            res.render('index', {
+                title: 'Boats',
+                boats: boats
+            });
         }
-    ];
-    res.render('index', {
-        title: 'Boats',
-        boats: boats
     });
 });
 
