@@ -4,11 +4,13 @@ const mongoose = require('mongoose');
 const expressValidator = require('express-validator');
 const flash = require('connect-flash');
 const session = require('express-session');
+const passport = require('passport');
+const config = require('./config/database');
 
 // Bring in Boats Model
 let Boat = require('./models/boat');
 
-mongoose.connect('mongodb://user:admin@ds161443.mlab.com:61443/boats');
+mongoose.connect(config.database);
 
 //---- Init App ----//
 const app = express();
@@ -58,6 +60,17 @@ app.use(
         }
     })
 );
+
+//---- Passport config ----//
+require('./config/passport')(passport);
+// Passport Middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.get('*', (req, res, next) => {
+    res.locals.user = req.user || null;
+    next();
+});
 
 // Set Public Folder
 app.use(express.static(path.join(__dirname, 'client')));
