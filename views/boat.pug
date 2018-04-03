@@ -6,3 +6,6 @@ block content
     h5 Engine: #{boat.engine}
     h5 Crew size: #{boat.crew}
     h5 Guests size: #{boat.guest}
+    hr
+    a.btn.btn-primary(href='/boat/edit/'+boat._id) Edit
+    a.btn.btn-danger.delete-boat(href='#', data-id=boat._id) Delete

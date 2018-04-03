@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname, 'client')));
 app.get('/', (req, res) => {
     Boat.find({}, (error, boats) => {
         if (error) {
-            throw err;
+            throw error;
         } else {
             res.render('index', {
                 title: 'Boats',
@@ -41,7 +41,7 @@ app.get('/', (req, res) => {
 // Get Single Boat
 app.get('/boat/:id', (req, res) => {
     Boat.findById(req.params.id, (error, boat) => {
-        if (error) throw err;
+        if (error) throw error;
 
         res.render('boat', {
             boat: boat
@@ -71,6 +71,46 @@ app.post('/boats/add', (req, res) => {
         if (error) throw error;
 
         res.redirect('/');
+    });
+});
+
+// Load Edit Form
+app.get('/boat/edit/:id', (req, res) => {
+    Boat.findById(req.params.id, (error, boat) => {
+        if (error) throw error;
+
+        res.render('edit_boat', {
+            title: 'Edit Boat',
+            boat: boat
+        });
+    });
+});
+
+// Update Edit Boat
+app.post('/boats/edit/:id', (req, res) => {
+    let boat = {};
+    boat.name = req.body.name;
+    boat.year = req.body.year;
+    boat.engine = req.body.engine;
+    boat.crew = req.body.crew;
+    boat.guest = req.body.guest;
+
+    let query = { _id: req.params.id };
+
+    Boat.update(query, boat, error => {
+        if (error) throw error;
+
+        res.redirect('/');
+    });
+});
+
+app.delete('/boat/:id', (req, res) => {
+    let query = { _id: req.params.id };
+
+    Boat.remove(query, error => {
+        if (error) throw err;
+
+        res.send('Sucess');
     });
 });
 

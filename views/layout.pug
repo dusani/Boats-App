@@ -6,6 +6,7 @@ head
     meta(http-equiv="X-UA-Compatible", content="ie=edge")
     title Boats App
     link(rel='stylesheet' href='/bower_components/bootstrap/dist/css/bootstrap.css')
+    link(rel='stylesheet' href='/css/style.css')
 body
     nav.navbar.navbar-expand-md.navbar-dark.bg-dark
       a.navbar-brand(href='/') Boats App
@@ -18,9 +19,7 @@ body
               | Home 
               span.sr-only (current)
           li.nav-item
-            a.nav-link(href='/boats/add') Add Boat
-          
-            
+            a.nav-link(href='/boats/add') Add Boat        
     .container
         block content
         br
@@ -29,3 +28,4 @@ body
             p Copyright &copy; 2017
     script(src='/bower_components/jquery/dist/jquery.js')
     script(src='/bower_components/bootstrap/dist/js/bootstrap.js')
+    script(src='/js/main.js')

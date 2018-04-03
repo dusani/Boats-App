@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    h1 #{title}
+    form(method='POST', action='/boats/edit/'+boat._id)
+        #form-group
+            label Name:
+            input.form-control(name='name', type='text', value=boat.name)
+        #form-group
+            label Year:
+            input.form-control(name='year', type='number', value=boat.year)
+        #form-group
+            label Engine:
+            input.form-control(name='engine', type='text', value=boat.engine)
+        #form-group
+            label Crew:
+            input.form-control(name='crew', type='number', value=boat.crew)
+        #form-group
+            label Guest:
+            input.form-control(name='guest', type='number', value=boat.guest)
+        hr
+        input.btn.btn-primary(type='submit', value='Save ->')
