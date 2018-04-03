@@ -3,9 +3,11 @@ const router = express.Router();
 
 // Bring in Boats Model
 let Boat = require('../models/boat');
+// Bring in User Model
+let User = require('../models/user');
 
 // Add Route
-router.get('/add', (req, res) => {
+router.get('/add', ensureAuthentication, (req, res) => {
     res.render('add_boat', {
         title: 'Add Boat'
     });
@@ -36,6 +38,7 @@ router.post('/add', (req, res) => {
         boat.engine = req.body.engine;
         boat.crew = req.body.crew;
         boat.guest = req.body.guest;
+        boat.author = req.user._id;
 
         boat.save(error => {
             if (error) {
@@ -49,8 +52,12 @@ router.post('/add', (req, res) => {
 });
 
 // Load Edit Form
-router.get('/edit/:id', (req, res) => {
+router.get('/edit/:id', ensureAuthentication, (req, res) => {
     Boat.findById(req.params.id, (error, boat) => {
+        if (boat.author != req.user._id) {
+            req.flash('danger', 'Not Authorized');
+            res.redirect('/');
+        }
         if (error) throw error;
 
         res.render('edit_boat', {
@@ -81,24 +88,45 @@ router.post('/edit/:id', (req, res) => {
 
 // Delete a Boat
 router.delete('/:id', (req, res) => {
+    if (!req.user._id) {
+        res.status(500).send();
+    }
     let query = { _id: req.params.id };
 
-    Boat.remove(query, error => {
-        if (error) throw err;
+    Boat.findById(req.params.id, (error, boat) => {
+        if (baot.author != req.user._id) {
+            res.status(500).send();
+        } else {
+            Boat.remove(query, error => {
+                if (error) throw err;
 
-        res.send('Success');
+                res.send('Success');
+            });
+        }
     });
 });
 
 // Get Single Boat
 router.get('/:id', (req, res) => {
     Boat.findById(req.params.id, (error, boat) => {
-        if (error) throw error;
+        User.findById(boat.author, (error, user) => {
+            if (error) throw error;
 
-        res.render('boat', {
-            boat: boat
+            res.render('boat', {
+                boat: boat
+            });
         });
     });
 });
+
+// Access Control
+function ensureAuthentication(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        req.flash('danger', 'Please Login');
+        res.redirect('/users/login');
+    }
+}
 
 module.exports = router;

@@ -6,7 +6,8 @@ const BoatSchema = new mongoose.Schema({
     year: { type: Number, required: true },
     engine: { type: String, required: true },
     crew: { type: Number, required: true },
-    guest: { type: Number, required: true }
+    guest: { type: Number, required: true },
+    author: { type: String, required: true }
 });
 
 module.exports = mongoose.model('Boat', BoatSchema);
