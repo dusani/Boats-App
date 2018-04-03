@@ -6,7 +6,7 @@ $(document).ready(() => {
 
         $.ajax({
             type: 'DELETE',
-            url: '/boat/' + id,
+            url: '/boats/' + id,
             success: response => {
                 alert('Deleting Boat');
                 window.location.href = '/';

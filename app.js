@@ -1,6 +1,9 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
+const expressValidator = require('express-validator');
+const flash = require('connect-flash');
+const session = require('express-session');
 
 // Bring in Boats Model
 let Boat = require('./models/boat');
@@ -20,6 +23,42 @@ app.use(express.urlencoded({ extended: false }));
 // parse application/json
 app.use(express.json());
 
+//---- Express Session Middleware ----//
+app.use(
+    session({
+        secret: 'wild hog',
+        resave: true,
+        saveUnitialized: true
+    })
+);
+
+//---- Express Messages Middleware ----//
+app.use(require('connect-flash')());
+app.use((req, res, next) => {
+    res.locals.messages = require('express-messages')(req, res);
+    next();
+});
+
+//---- Express validator Middleware ----//
+app.use(
+    expressValidator({
+        errorFormatter: (param, msg, value) => {
+            var namespace = param.split('.'),
+                root = namespace.shift(),
+                formParam = root;
+
+            while (namespace.length) {
+                formParam += '[' + namespace.shift() + ']';
+            }
+            return {
+                param: formParam,
+                msg: msg,
+                value: value
+            };
+        }
+    })
+);
+
 // Set Public Folder
 app.use(express.static(path.join(__dirname, 'client')));
 
@@ -38,81 +77,9 @@ app.get('/', (req, res) => {
     });
 });
 
-// Get Single Boat
-app.get('/boat/:id', (req, res) => {
-    Boat.findById(req.params.id, (error, boat) => {
-        if (error) throw error;
-
-        res.render('boat', {
-            boat: boat
-        });
-    });
-});
-
-// Add Route
-app.get('/boats/add', (req, res) => {
-    res.render('add_boat', {
-        title: 'Add Boats'
-    });
-});
-
-// Add Submit POST Route
-app.post('/boats/add', (req, res) => {
-    // console.log('Submitted');
-    let boat = new Boat();
-    boat.name = req.body.name;
-    // console.log(req.body.name);
-    boat.year = req.body.year;
-    boat.engine = req.body.engine;
-    boat.crew = req.body.crew;
-    boat.guest = req.body.guest;
-
-    boat.save(error => {
-        if (error) throw error;
-
-        res.redirect('/');
-    });
-});
-
-// Load Edit Form
-app.get('/boat/edit/:id', (req, res) => {
-    Boat.findById(req.params.id, (error, boat) => {
-        if (error) throw error;
-
-        res.render('edit_boat', {
-            title: 'Edit Boat',
-            boat: boat
-        });
-    });
-});
-
-// Update Edit Boat
-app.post('/boats/edit/:id', (req, res) => {
-    let boat = {};
-    boat.name = req.body.name;
-    boat.year = req.body.year;
-    boat.engine = req.body.engine;
-    boat.crew = req.body.crew;
-    boat.guest = req.body.guest;
-
-    let query = { _id: req.params.id };
-
-    Boat.update(query, boat, error => {
-        if (error) throw error;
-
-        res.redirect('/');
-    });
-});
-
-app.delete('/boat/:id', (req, res) => {
-    let query = { _id: req.params.id };
-
-    Boat.remove(query, error => {
-        if (error) throw err;
-
-        res.send('Sucess');
-    });
-});
+//---- Bring in Routes files ----//
+let boats = require('./routes/boats');
+app.use('/boats', boats);
 
 //---- Start Server ----//
 app.listen(3000, () => {
