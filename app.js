@@ -20,6 +20,9 @@ app.use(express.urlencoded({ extended: false }));
 // parse application/json
 app.use(express.json());
 
+// Set Public Folder
+app.use(express.static(path.join(__dirname, 'client')));
+
 //---- Routes ----//
 // Home Route
 app.get('/', (req, res) => {
@@ -35,6 +38,18 @@ app.get('/', (req, res) => {
     });
 });
 
+// Get Single Boat
+app.get('/boat/:id', (req, res) => {
+    Boat.findById(req.params.id, (error, boat) => {
+        if (error) throw err;
+
+        res.render('boat', {
+            boat: boat
+        });
+    });
+});
+
+// Add Route
 app.get('/boats/add', (req, res) => {
     res.render('add_boat', {
         title: 'Add Boats'
